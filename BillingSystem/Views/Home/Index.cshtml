@@ -1,0 +1,128 @@
+﻿@model BillingSystem.Contracts.Models.Invoice.Invoice
+@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+@{
+    ViewData["Title"] = "Home Page";
+    var agentName = UserManager.GetUserName(User);
+    var random = new Random();
+    var invoiceNumber = random.Next(1000, 10000); // Generates a random number between 1000 and 9999 (inclusive)
+}
+
+<form method="post" asp-controller="Home" class="mt-4"  asp-action="AddInvoice">
+    <div class="form-group mb-3" style="width:170px">
+        <select class="form-control bg-dark text-white" id="customer_dropdown" asp-for="CustomerName" asp-items="@ViewBag.Customers">
+            <option value="">Select Customer</option>
+        </select>
+        <span asp-validation-for="CustomerName" class="text-danger"></span>
+    </div>
+
+   @*  products table *@
+    <div class="row justify-content-center">
+        <table id="product-table" class="table table-responsive table-bordered table-striped" style="width:100%">
+            <thead>
+                <tr>
+                    <th>
+                        Name
+                    </th>
+                    <th>
+                        Description
+                    </th>
+                    <th>
+                        Price
+                    </th>
+                    <th>
+                        Category
+                    </th>
+                    <th>
+                        SubCategory
+                    </th>
+                    <th>
+                        Quantity
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var product in ViewBag.Products as IEnumerable<BillingSystem.Models.Products.Product>)
+                {
+                    <tr>
+                        <td>
+                            @product.Name
+                        </td>
+                        <td>
+                            @product.Description
+                        </td>
+                        <td>
+                            @product.Price
+                        </td>
+                        <td>
+                            @product.Category
+                        </td>
+                        <td>
+                            @product.SubCategory
+                        </td>
+                        <td class="col">
+                            <div class="d-flex gap-2">
+                                <input type="number"  class="quantity-input bg-secondary text-white form-control" value="0" min="0" />
+                                <button type="button" class="plus btn btn-primary w-40">+</button>
+                                <button type="button" class="minus btn btn-danger w-40">-</button>
+                            </div>
+                        </td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    @* fields for invoice form *@
+    <input type="hidden" asp-for="TotalAmount" name="TotalAmount" id="totalAmount" />
+    <input type="hidden" asp-for="Products" name="ProductCount" id="productCount" />
+    <input type="hidden" asp-for="TotalQuantity" name="TotalQuantity" id="totalQuantity" />
+    <input type="hidden" asp-for="GrandTotal" name="GrandTotal" id="grandTotal" />
+    <input type="hidden" asp-for="Discount" name="Discount" id="discount_applied" />
+    <input type="hidden" asp-for="Tax" name="Tax" id="tax_applied" />
+    <input type="hidden" asp-for="AgentName" id="agent_name" value="@agentName" />
+    <input type="hidden" asp-for="InvoiceNumber" id="invoice_number" value="@invoiceNumber" />
+    <input type="hidden" id="selected-products" name="SelectedProducts" />
+@*     <input type="hidden" id="selected-products" name="SelectedProducts" />
+ *@    <!-- Tax and Discount Inputs -->
+    <div class="row">
+        <div class="col-md-4">
+            <label class="" for="tax">Tax (%)</label>
+            <input type="number" id="tax" class="form-control bg-dark text-white" value="0" min="0" max="100" step="0.01" />
+        </div>
+        <div class=" col-md-4">
+            <label for="discount">Discount (%)</label>
+            <input type="number" id="discount" class="form-control bg-dark text-white" value="0" min="0" max="100" step="0.01" />
+        </div>
+        <div class="col-md-4">
+            <label for="grand-total">Grand Total: ₨</label>
+            <input type="number" readonly id="grand-total" class="form-control bg-dark text-white" value="0"/>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <label for="total">Total: ₨</label>
+            <input type="number" readonly id="total" class="form-control bg-dark text-white" value="0" />
+        </div>
+        <div class="col-md-4">
+            <label for="total-unique-products">Products</label>
+            <input type="number" readonly id="total-unique-products" class="form-control bg-dark text-white" value="0" />
+        </div>
+        <div class="col-md-4">
+            <label for="total-quantity">Quantity</label>
+            <input type="number" readonly id="total-quantity" class="form-control bg-dark text-white" value="0" />
+        </div>
+    </div>
+    <button type="submit" id="submit-btn" class="w-100 btn btn-lg btn-primary mt-4 jut ">Genrate Invoice</button>
+</form>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

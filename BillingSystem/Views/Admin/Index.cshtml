@@ -1,0 +1,217 @@
+﻿@model IEnumerable<BillingSystem.Contracts.Models.Invoice.Invoice>
+@{
+    // Calculate total sales
+    decimal totalSales = Model.Sum(i => i.GrandTotal);
+    int counter = 0;
+
+    // Count number of customers
+    var uniqueCustomers = new HashSet<string>();
+    foreach (var invoice in Model)
+    {
+        uniqueCustomers.Add(invoice.CustomerName);
+        counter++;
+    }
+    int numberOfCustomers = uniqueCustomers.Count;
+    var invoiceCount = counter;
+
+    // Find the most frequent customer
+    var customerFrequency = new Dictionary<string, int>();
+    foreach (var invoice in Model)
+    {
+        if (customerFrequency.ContainsKey(invoice.CustomerName))
+        {
+            customerFrequency[invoice.CustomerName]++;
+        }
+        else
+        {
+            customerFrequency[invoice.CustomerName] = 1;
+        }
+    }
+    var mostFrequentCustomer = customerFrequency.OrderByDescending(pair => pair.Value).FirstOrDefault().Key;
+
+    // Find the most frequent agent
+    var agentFrequency = new Dictionary<string, int>();
+    foreach (var invoice in Model)
+    {
+        if (agentFrequency.ContainsKey(invoice.AgentName))
+        {
+            agentFrequency[invoice.AgentName]++;
+        }
+        else
+        {
+            agentFrequency[invoice.AgentName] = 1;
+        }
+    }
+    var mostFrequentAgent = agentFrequency.OrderByDescending(pair => pair.Value).FirstOrDefault().Key;
+}
+
+
+<div class="row d-flex gap-4 w-100 justify-content-center mt-4">
+
+    <div class="col-2 d-flex pt-2 rounded-2 bg-primary align-items-center">
+        <h1 class="text-white ">
+            <i class="bi bi-receipt"></i>&nbsp;
+        </h1>
+        <div class="d-flex flex-column">
+
+            <h6 class="text-white">
+                Total Sales
+            </h6>
+            <h6 class="text-white">
+                @totalSales
+            </h6>
+        </div>
+    </div>
+
+    <div class="col-2 d-flex pt-2 rounded-2 bg-primary align-items-center">
+        <h1 class="text-white ">
+            <i class="bi bi-receipt-cutoff"></i>&nbsp;
+        </h1>
+        <div class="d-flex flex-column">
+
+            <h6 class="text-white">
+                Total Invoice
+            </h6>
+            <h6 class="text-white">
+                @invoiceCount
+            </h6>
+        </div>
+    </div>
+
+    @* <div class="col-2 d-flex pt-2 rounded-2 bg-primary align-items-center">
+    <h1 class="text-white ">
+    <i class="bi bi-person-vcard-fill"></i>&nbsp;
+    </h1>
+    <div class="d-flex flex-column">
+
+    <h6 class="text-white">
+    Customers
+    </h6>
+    <h6 class="text-white">
+    @numberOfCustomers
+    </h6>
+    </div>
+    </div> *@
+
+    <div class="col-3  d-flex pt-2 rounded-2 bg-primary align-items-center">
+        <h1 class="text-white ">
+            <i class="bi bi-person-badge"></i>&nbsp;
+        </h1>
+        <div class="d-flex flex-column">
+
+            <h6 class="text-white">
+                Most Frequent Customer
+            </h6>
+            <h6 class="text-white">
+                @mostFrequentCustomer
+            </h6>
+        </div>
+    </div>
+
+    <div class="col-3  d-flex pt-2 rounded-2 bg-primary align-items-center">
+        <h1 class="text-white ">
+            <i class="bi bi-person-circle"></i>&nbsp;
+        </h1>
+        <div class="d-flex flex-column">
+
+            <h6 class="text-white">
+                Most Frequent Agent
+            </h6>
+            <h6 class="text-white">
+                @mostFrequentAgent
+            </h6>
+        </div>
+    </div>
+</div>
+
+
+@* Sales Table *@
+<div class="row justify-content-center mt-4">
+    <table class="table table-responsive table-bordered table-striped bg-primary shadow-lg" style="width:100%">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.InvoiceNumber)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CustomerName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.AgentName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.InvoiceDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.TotalAmount)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.GrandTotal)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Products)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.TotalQuantity)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Tax)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Discount)
+                </th>
+                <th>
+                    Action
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                var rowColor = "odd"; // Start with odd row color
+            }
+            @foreach (var invoice in Model)
+            {
+                <tr class="odd" style="background-color: #f6f7d8">
+                    <td>
+                        @invoice.InvoiceNumber
+                    </td>
+                    <td>
+                        @invoice.CustomerName
+                    </td>
+                    <td>
+                        @invoice.AgentName
+                    </td>
+                    <td>
+                        @invoice.InvoiceDate
+                    </td>
+                    <td>
+                        ₨ @invoice.TotalAmount
+                    </td>
+                    <td>
+                        ₨ @invoice.GrandTotal
+                    </td>
+                    <td>
+                        @invoice.Products
+                    </td>
+                    <td>
+                        @invoice.TotalQuantity
+                    </td>
+                    <td>
+                        @invoice.Tax %
+                    </td>
+                    <td>
+                        @invoice.Discount %
+                    </td>
+                    <td>
+                        <a asp-route-invoicenumber="@invoice.InvoiceNumber" asp-action="ShowInfo" class="btn btn-primary text-white">Products &nbsp;<i class="bi bi-box-arrow-right"></i></a>
+                    </td>
+                </tr>
+                rowColor = (rowColor == "odd") ? "even" : "odd";
+            }
+        </tbody>
+    </table>
+</div>
+
+
+
+ 

@@ -1,0 +1,91 @@
+﻿@using Microsoft.AspNetCore.Identity
+@model List<IdentityUser>
+@inject UserManager<IdentityUser> userManager
+
+
+@{
+    var agentsUsers = Model.Where(u => userManager.IsInRoleAsync(u, "Agent").Result).ToList();
+}
+<div class="container mt-5">
+    <div class="row d-flex justify-content-between">
+        <div class="col-2 bg-primary pt-1 text-center rounded-2">
+            <h3 class="text-white"> <i class="bi bi-people"></i>&nbsp;Agents</h3>
+        </div>
+
+        <div class="col-2  text-end">
+            <a asp-controller="Admin" asp-action="CreateAgent" class=" w-100 btn btn-primary text-center">
+                <i class="bi bi-person-fill-add"></i>&nbsp;Create Agent
+            </a>
+        </div>
+    </div>
+</div>
+
+
+@* Agent Table *@
+<div class="row mt-4 justify-content-center">
+    <table class="table table-responsive table-bordered table-striped" style="width:100%">
+        <thead>
+            <tr>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Email
+                </th>
+                <th>
+                    PhoneNo.
+                </th>
+                <th>
+                    Action
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in agentsUsers)
+            {
+                <tr>
+                    <td>
+                        @user.UserName
+                    </td>
+                    <td>
+                        @user.Email
+                    </td>
+                    <td>
+                        @user.PhoneNumber
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-danger w-100" onclick="confirmDelete('@user.Id')">Remove</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmDeleteModalLabel">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this agent?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                <a id="deleteLink" class="btn btn-danger" href="#">Yes</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    function confirmDelete(userId) {
+        $('#confirmDeleteModal').modal('show');
+        document.getElementById("deleteLink").href = "/Admin/DeleteAgent?userId=" + userId;
+    }
+</script>

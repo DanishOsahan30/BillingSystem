@@ -1,0 +1,8 @@
+﻿@model BillingSystem.Contracts.Models.Invoice.Invoice
+<input type="hidden" asp-for="TotalAmount" name="TotalAmount" id="totalAmount" />
+<input type="hidden" asp-for="Products" name="ProductCount" id="productCount" />
+<input type="hidden" asp-for="TotalQuantity" name="TotalQuantity" id="totalQuantity" />
+<input type="hidden" asp-for="GrandTotal" name="GrandTotal" id="grandTotal" />
+<input type="hidden" asp-for="Discount" name="Discount" id="discount_applied" />
+<input type="hidden" asp-for="Tax" name="Tax" id="tax_applied" />
+<button type="submit" class="w-100 btn btn-lg btn-primary">Submit Invoice</button>

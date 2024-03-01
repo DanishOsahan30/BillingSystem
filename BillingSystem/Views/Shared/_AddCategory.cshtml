@@ -1,0 +1,42 @@
+﻿@model BillingSystem.Models.Products.Category
+
+    <button type="button" class="btn btn-primary w-25" onclick="addCategory()">
+    <i class="bi bi-plus-circle-dotted"></i>&nbsp;Add Category
+    </button>
+
+<!-- Modal -->
+<div class="modal fade" id="addCategoryModal" tabindex="-1" role="dialog" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addCategoryModalLabel">Add Category</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body ">
+                <form asp-action="AddCategory" method="post">
+                    <div class="form-group">
+                        <label asp-for="Name" class="mb-2"></label>
+                        <input type="text" asp-for="Name" class="form-control" required>
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="w-100 text-center">
+
+                    <button type="submit" class="btn btn-primary mt-3 w-50 ">Add</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script type="text/javascript">
+    function addCategory() {
+        $('#addCategoryModal').modal('show');
+    }
+</script>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
