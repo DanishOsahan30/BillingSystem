@@ -1,11 +1,10 @@
 # ASP.NET Core (.NET Framework)
-- 
 # Build and test ASP.NET Core projects targeting the full .NET Framework.
 # Add steps that publish symbols, save build artifacts, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
 
 trigger:
-- main
+  none
 
 pool:
   vmImage: 'windows-latest'
@@ -34,11 +33,12 @@ steps:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
-  task: PublishBuildArtifacts@1
+- task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
     ArtifactName: 'drop'
     publishLocation: 'Container'
+
 - task: AzureRmWebAppDeployment@4
   inputs:
     ConnectionType: 'AzureRM'
@@ -46,4 +46,3 @@ steps:
     appType: 'webApp'
     WebAppName: 'invoicegenarator'
     packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
-
