@@ -45,4 +45,4 @@ steps:
     azureSubscription: 'InvoiceConnection'
     appType: 'webApp'
     WebAppName: 'invoicegenarator'
-    packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
+    package: '$(System.DefaultWorkingDirectory)/drop/WebApp.zip'
