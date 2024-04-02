@@ -45,10 +45,15 @@ steps:
     artifactName: 'drop'
     downloadPath: '$(System.ArtifactsDirectory)'
 
+
+
 - task: AzureRmWebAppDeployment@4
   inputs:
     ConnectionType: 'AzureRM'
     azureSubscription: 'InvoiceConnection'
     appType: 'webApp'
     WebAppName: 'invoicegenarator'
-    package: '$(System.ArtifactsDirectory)/drop/WebApp.zip'
+    deployToSlotOrASE: true
+    ResourceGroupName: 'app_grp3'
+    SlotName: 'production'
+    packageForLinux: '$(System.ArtifactsDirectory)/**/*.zip'
