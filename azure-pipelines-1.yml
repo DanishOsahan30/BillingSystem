@@ -36,7 +36,7 @@ steps:
 
 - task: PublishBuildArtifacts@1
   inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    PathtoPublish: '$(Build.ArtifactStagingDirectory1)'
     ArtifactName: 'drop'
     publishLocation: 'Container'
 - task: DownloadBuildArtifacts@1
@@ -44,7 +44,7 @@ steps:
     buildType: 'current'
     downloadType: 'single'
     artifactName: 'drop'
-    downloadPath: '$(System.ArtifactsDirectory)'
+    downloadPath: '$(System.ArtifactsDirectory1)'
 
 - task: AzureRmWebAppDeployment@4
   inputs:
@@ -55,4 +55,4 @@ steps:
     deployToSlotOrASE: true
     ResourceGroupName: 'app_grp3'
     SlotName: 'production'
-    packageForLinux: '$(System.ArtifactsDirectory)/**/*.zip'
+    packageForLinux: '$(System.ArtifactsDirectory1)/**/*.zip'
